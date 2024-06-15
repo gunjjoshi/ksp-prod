@@ -2,14 +2,18 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminAuth } from '../../../utils/firebaseAdminInit'
 import { firestore } from '../../../utils/firebaseInit'
 import { collection, doc, getDocs, setDoc } from 'firebase/firestore'
+import NextCors from 'nextjs-cors'
 
 export default async function authHandler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://ksp-prod.vercel.app') // Replace with your frontend domain
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    await NextCors(req, res, {
+        // Options
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        origin: '*',
+        optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    })
     const { method, headers } = req
 
     switch (method) {
