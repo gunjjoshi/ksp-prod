@@ -55,7 +55,7 @@ const Course: NextPage = ({}) => {
     const refetchReviews = () => {
         setIsDataFetching(true)
         if (router.query.code) {
-            const code = (router.query.code[0])
+            const code = router.query.code[0]
             getCourseById({ code }).then((res) => {
                 setReviews(res.reviews)
                 setIsDataFetching(false)
@@ -67,7 +67,7 @@ const Course: NextPage = ({}) => {
     useEffect(() => {
         setIsDataFetching(true)
         if (router.query.code) {
-            const code = (router.query.code[0])
+            const code = router.query.code[0]
             getCourseById({ code }).then((res) => {
                 setCourse(res)
                 setReviews(res.reviews)
@@ -83,18 +83,13 @@ const Course: NextPage = ({}) => {
 
     useEffect(() => {
         if (user && reviews) {
-          if (Array.isArray(reviews)) {
-            const userHasReviewed = reviews.find((review: any) => user.user_id === review.user_id);
-            setAlreadyReviewed(!!userHasReviewed);
-          } else if (typeof reviews === 'object' && reviews !== null) {
-            const reviewKeys = Object.keys(reviews);
-            const userHasReviewed = reviewKeys.some((key) => reviews[key].user_id === user.user_id);
-            setAlreadyReviewed(userHasReviewed);
-          }
+            const typedUser = user as { user_id: string }
+            const userHasReviewed = reviews.find(
+                (review: any) => typedUser.user_id === review.user_id
+            )
+            setAlreadyReviewed(!!userHasReviewed)
         }
-      }, [reviews, user]);
-      
-      
+    }, [reviews, user])
 
     return (
         course && (
@@ -189,7 +184,7 @@ const Course: NextPage = ({}) => {
                         {isDataFetching ? (
                             Array(8)
                                 .fill({})
-                                .map((res, index) => {
+                                .map((_, index) => {
                                     return (
                                         <div
                                             key={index}
@@ -208,8 +203,8 @@ const Course: NextPage = ({}) => {
                                         </div>
                                     )
                                 })
-                        ) : reviews && typeof reviews === 'object' && Object.keys(reviews).length ? (
-                            Object.values(reviews).map((review: any) => {
+                        ) : reviews && reviews.length > 0 ? (
+                            reviews.map((review: any) => {
                                 return (
                                     <div
                                         className="shadow-xl w-[20rem] duration-150 transition-all p-6 rounded-md flex flex-col justify-between space-y-3"
