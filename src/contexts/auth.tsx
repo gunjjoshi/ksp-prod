@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }: any) => {
   const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Functions
   const logout = async () => {
     try {
       await signOut(firebaseAuth);
